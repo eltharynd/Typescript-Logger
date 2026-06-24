@@ -22,6 +22,8 @@ npm i -S ez-ts-logger
 ## Usage
 
 ```typescript
+import { Logger} from 'ez-ts-logger'
+
 Logger.debug('A Debugging message')
 Logger.info({
   Hello: 'World!',
