@@ -1,13 +1,13 @@
 # EZ Typescript Logger
 
-![GitHub Release](https://img.shields.io/github/v/release/eltharynd/ez-ts-logger?style=flat-square)
-[![NPM Version][npm-version-image]][npm-url]
-[![NPM Install Size][npm-install-size-image]][npm-install-size-url]
-[![NPM Downloads][npm-downloads-image]][npm-downloads-url]
-
+[![GitHub Release](https://img.shields.io/github/v/release/eltharynd/ez-ts-logger?style=flat-square)](https://github.com/eltharynd/ez-ts-logger/releases)
 ![GitHub Issues](https://img.shields.io/github/issues/eltharynd/onepacerr?style=flat-square)
 ![GitHub Last Commit](https://img.shields.io/github/last-commit/eltharynd/onepacerr?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
+
+[![NPM Version][npm-version-image]][npm-url]
+[![NPM Install Size][npm-install-size-image]][npm-install-size-url]
+[![NPM Downloads][npm-downloads-image]][npm-downloads-url]
 
 A simple to use, yet professional looking Logger for Typescript.
 
