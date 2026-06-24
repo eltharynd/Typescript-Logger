@@ -10,6 +10,7 @@ on:
       - ".npmignore"
       - ".gitignore"
       - ".github/workflows/release.yaml"
+      - "README.md"
   workflow_dispatch:
     inputs:
       version:
