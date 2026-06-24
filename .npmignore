@@ -5,5 +5,7 @@ node_modules/
 **/.gitignore
 **/tsconfig.json
 **/src
-**/dist/showcase*
+**/dist/showcase.js
+**/dist/showcase.js.map
+**/dist/showcase.d.ts
 
