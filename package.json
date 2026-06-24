@@ -1,5 +1,5 @@
 {
-  "name": "typescript-logger",
+  "name": "ts-logger",
   "version": "0.0.1",
   "description": "A simple to use Logger for Typescript",
   "main": "dist/index.js",
