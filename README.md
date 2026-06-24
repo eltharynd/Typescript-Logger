@@ -22,21 +22,26 @@ npm i -S ez-ts-logger
 ## Usage
 
 ```typescript
-import Logger from 'ez-ts-logged'
-
 Logger.debug('A Debugging message')
-Logger.info(anObject)
+Logger.info({
+  Hello: 'World!',
+  foo: {
+    bar: true,
+  },
+})
 Logger.warn('A Warning message')
 
 Logger.error('An Error message')
 Logger.error(new Error())
 
 try {
-  Logger.errorAndThrow(new Error())
+  Logger.errorAndThrow(new CustomError('Some Message'))
 } catch (e) {
-  // Caught
+  Logger.info('Caught')
 }
 ```
+
+![Short example output](docs/short.png)
 
 ## Configuration
 
@@ -56,9 +61,7 @@ DEBUGGING=false
 TESTING=false
 ```
 
-## Full features
-
-### Showcase script
+## Full Showcase
 
 ```typescript
 const object = {
@@ -139,8 +142,6 @@ try {
   console.log()
 }
 ```
-
-### Showcase output
 
 ![Showcase output](docs/showcase.png)
 
