@@ -1,7 +1,9 @@
 node_modules/
+**/.env
 **/.git
 **/.github
 **/.gitignore
 **/tsconfig.json
 **/src
 **/dist/showcase*
+
