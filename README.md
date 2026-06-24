@@ -43,7 +43,7 @@ try {
 }
 ```
 
-![Short example output](docs/short.png)
+![Short example output](docs/showcase-short.png)
 
 ## Configuration
 
@@ -145,7 +145,7 @@ try {
 }
 ```
 
-![Showcase output](docs/showcase.png)
+![Showcase output](docs/showcase-full.png)
 
 [npm-version-image]: https://badgen.net/npm/v/ez-ts-logger
 [npm-url]: https://npmjs.org/package/ez-ts-logger
