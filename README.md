@@ -43,7 +43,7 @@ try {
 }
 ```
 
-![Short example output](docs/showcase-short.png)
+![Short example output](docs/showcase-min.png)
 
 ## Configuration
 
