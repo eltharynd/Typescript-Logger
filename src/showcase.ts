@@ -1,4 +1,4 @@
-import Logger, { LoggerLevels } from './index.js'
+import { Logger, LoggerLevels } from './index.js'
 
 class CustomError extends Error {
 	constructor(message?: string, options?: { cause?: unknown }) {
