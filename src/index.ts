@@ -4,8 +4,8 @@ import JSONLogger from 'node-json-logger'
 export interface LoggerConfigs {
 	LOG_LEVEL: LoggerLevels | string
 	LOG_OUTPUT: LoggerOutput
-	TESTING: boolean
 	DEBUGGING: boolean
+	TESTING: boolean
 }
 
 interface LoggerConfigsInternal extends LoggerConfigs {
@@ -52,12 +52,12 @@ const determineLogOutput = (output: string): LoggerOutput => {
 	}
 }
 
-export default class Logger {
+export class Logger {
 	private static readonly config: LoggerConfigsInternal = {
 		LOG_LEVEL: determineLogLevel(process.env.LOG_LEVEL || 'info'),
 		LOG_OUTPUT: determineLogOutput(process.env.LOG_OUTPUT || 'text'),
-		TESTING: /true/i.test(process.env.TESTING || 'false'),
 		DEBUGGING: /true/i.test(process.env.DEBUGGING || 'false'),
+		TESTING: /true/i.test(process.env.TESTING || 'false'),
 	}
 	private static jsonlogger =
 		Logger.config.LOG_OUTPUT === 'json'
@@ -80,6 +80,10 @@ export default class Logger {
 				Logger.config[key] = configs[key]
 			}
 		}
+	}
+
+	static currentConfigs(): LoggerConfigs {
+		return this.config
 	}
 
 	static trace(args: string | Record<string, any>) {
@@ -147,7 +151,7 @@ export default class Logger {
 					chalk.yellow(`[${new Date().toLocaleString()}] [WARN] -`),
 					chalk.yellowBright(`${lines.splice(0, 1)[0]}`),
 				)
-				for (let line of lines) console.log(chalk.yellowBright(line))
+				for (let line of lines) console.warn(chalk.yellowBright(line))
 			} else {
 				console.warn(
 					chalk.yellow(
@@ -160,7 +164,7 @@ export default class Logger {
 
 	static error(args: string | Error | Record<string, any>) {
 		if (Logger.config.TESTING) return
-		if (Logger.config.LOG_LEVEL <= LoggerLevels.warning)
+		if (Logger.config.LOG_LEVEL <= LoggerLevels.error)
 			if (Logger.jsonlogger) {
 				if (args instanceof Error && args?.stack)
 					Logger.jsonlogger.error(args.stack)
@@ -188,7 +192,7 @@ export default class Logger {
 
 	static critical(args: string | Error | Record<string, any>) {
 		if (Logger.config.TESTING) return
-		if (Logger.config.LOG_LEVEL <= LoggerLevels.warning)
+		if (Logger.config.LOG_LEVEL <= LoggerLevels.critical)
 			if (Logger.jsonlogger) {
 				if (args instanceof Error && args?.stack)
 					Logger.jsonlogger.error(args.stack)

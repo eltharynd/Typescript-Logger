@@ -44,10 +44,10 @@ jobs:
         run: npm install -g npm@latest
 
       - name: Run tests
-        run: npm test --if-present
+        run: npm test:ci
 
       - name: Build
-        run: npm run build --if-present
+        run: npm run build
 
       - name: Install prod dependencies
         run: npm i --omit=dev

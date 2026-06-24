@@ -1,7 +1,17 @@
 # EZ Typescript Logger
 
-A simple to use Logger for Typescript
+![GitHub Release](https://img.shields.io/github/v/release/eltharynd/ez-ts-logger?style=flat-square)
+[![NPM Version][npm-version-image]][npm-url]
+[![NPM Install Size][npm-install-size-image]][npm-install-size-url]
+[![NPM Downloads][npm-downloads-image]][npm-downloads-url]
 
+![GitHub Issues](https://img.shields.io/github/issues/eltharynd/onepacerr?style=flat-square)
+![GitHub Last Commit](https://img.shields.io/github/last-commit/eltharynd/onepacerr?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
+
+A simple to use, yet professional looking Logger for Typescript.
+
+Supports json formatting for scraping the logs with Promtail for Loki/Grafana Stacks.
 
 ## Install
 
@@ -33,18 +43,17 @@ try {
 EZ Typescript Logger automatically gets its configuration from env vars (or default if undefined)
 
 ```dotenv
-
 # 'trace', 'debug', 'info', 'warning', 'error' or 'critical'
 LOG_LEVEL=info
 
 # 'text', 'json' (json formatting for Loki/Promtail/Grafana and such)
 LOG_OUTPUT=text
 
-# If 'true', will suppress all logs (used when running unit test)
-TESTING=false
-
 # If 'true', ignores log level when printing 'debug' message (always prints it)
 DEBUGGING=false
+
+# If 'true', will suppress all logs (used when running unit test)
+TESTING=false
 ```
 
 ## Full features
@@ -134,3 +143,12 @@ try {
 ### Showcase output
 
 ![Showcase output](docs/showcase.png)
+
+[npm-version-image]: https://badgen.net/npm/v/ez-ts-logger
+[npm-url]: https://npmjs.org/package/ez-ts-logger
+
+[npm-install-size-image]: https://badgen.net/packagephobia/install/ez-ts-logger
+[npm-install-size-url]: https://packagephobia.com/result?p=ez-ts-logger
+
+[npm-downloads-image]: https://badgen.net/npm/dm/ez-ts-logger
+[npm-downloads-url]: https://npmcharts.com/compare/ez-ts-logger?minimal=true
