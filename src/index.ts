@@ -64,6 +64,15 @@ export class Logger {
 			? new JSONLogger({ loggerName: 'node' })
 			: null
 
+	static reloadEnvConfigs() {
+		this.config.LOG_LEVEL = determineLogLevel(process.env.LOG_LEVEL || 'info')
+		this.config.LOG_OUTPUT = determineLogOutput(
+			process.env.LOG_OUTPUT || 'text',
+		)
+		this.config.DEBUGGING = /true/i.test(process.env.DEBUGGING || 'false')
+		this.config.TESTING = /true/i.test(process.env.TESTING || 'false')
+	}
+
 	static changeConfigs(configs: Partial<LoggerConfigs>) {
 		for (let key of Object.keys(configs)) {
 			if (key == 'LOG_LEVEL') {

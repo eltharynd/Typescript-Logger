@@ -84,6 +84,10 @@ const objectWithMessage = {
 
 const error = new CustomError('Nothing actually happened')
 
+//Force reload env configs.
+//this is useful when you are populating env at runtime, for example with 'dotenv'
+Logger.reloadEnvConfigs()
+
 //Just some spacing for readibility
 console.log()
 console.log()
