@@ -1,5 +1,14 @@
 import JSONLogger from 'node-json-logger'
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import {
+	afterAll,
+	afterEach,
+	beforeAll,
+	beforeEach,
+	describe,
+	expect,
+	it,
+	vi,
+} from 'vitest'
 import { Logger, LoggerConfigs, LoggerLevels } from './index.js'
 
 vi.mock('node-json-logger', () => {
@@ -8,8 +17,8 @@ vi.mock('node-json-logger', () => {
 	MockLogger.prototype.trace = vi.fn()
 	MockLogger.prototype.debug = vi.fn()
 	MockLogger.prototype.info = vi.fn()
-	MockLogger.prototype.error = vi.fn()
 	MockLogger.prototype.warn = vi.fn()
+	MockLogger.prototype.error = vi.fn()
 
 	return { default: MockLogger }
 })
@@ -123,6 +132,30 @@ describe('EZ Typescript Logger', () => {
 			expect(infoSpy).toHaveBeenCalledTimes(1)
 
 			Logger.changeConfigs({ TESTING: false })
+		})
+	})
+
+	describe('Environment', () => {
+		beforeAll(() => {
+			vi.stubEnv('LOG_LEVEL', 'warning')
+			vi.stubEnv('LOG_OUTPUT', 'json')
+			vi.stubEnv('DEBUGGING', 'true')
+			vi.stubEnv('TESTING', 'true')
+			Logger.reloadEnvConfigs()
+		})
+
+		afterAll(() => {
+			vi.unstubAllEnvs()
+			Logger.reloadEnvConfigs()
+		})
+
+		it('Should have initialized defaults from defined environment', () => {
+			conf = Logger.currentConfigs()
+
+			expect(conf.LOG_LEVEL).toBe(LoggerLevels.warning)
+			expect(conf.LOG_OUTPUT).toBe('json')
+			expect(conf.DEBUGGING).toBe(true)
+			expect(conf.TESTING).toBe(true)
 		})
 	})
 
@@ -461,11 +494,45 @@ describe('EZ Typescript Logger', () => {
 	})
 
 	describe('JSON output', () => {
-		beforeAll(() => {
-			Logger.changeConfigs({
-				LOG_OUTPUT: 'json',
-				LOG_LEVEL: LoggerLevels.trace,
+		beforeEach(() => {
+			vi.stubEnv('LOG_OUTPUT', 'json')
+			vi.stubEnv('LOG_LEVEL', 'trace')
+			Logger.reloadEnvConfigs()
+		})
+
+		afterEach(() => {
+			Logger.reloadEnvConfigs()
+			vi.unstubAllEnvs()
+		})
+
+		it('Should set JSONLogger on reloadConfigs', () => {
+			Logger.info({ level: 'info', message: 'my info message' })
+
+			expect(JSONLogger.prototype.info).toHaveBeenCalledTimes(1)
+			expect(JSONLogger.prototype.info).toHaveBeenCalledWith({
+				level: 'info',
+				message: 'my info message',
 			})
+		})
+
+		it('Should set JSONLogger on changeConfigs', () => {
+			Logger.info({ level: 'info', message: 'my info message' })
+
+			expect(JSONLogger.prototype.info).toHaveBeenCalledTimes(1)
+			expect(JSONLogger.prototype.info).toHaveBeenCalledWith({
+				level: 'info',
+				message: 'my info message',
+			})
+		})
+
+		it('Should unset JSONLogger on changeConfigs', () => {
+			Logger.changeConfigs({
+				LOG_OUTPUT: 'text',
+			})
+
+			Logger.info({ level: 'info', message: 'my info message' })
+
+			expect(JSONLogger.prototype.info).toHaveBeenCalledTimes(0)
 		})
 
 		it('Should print all levels', () => {
@@ -493,6 +560,7 @@ describe('EZ Typescript Logger', () => {
 				level: 'info',
 				message: 'my info message',
 			})
+
 			expect(JSONLogger.prototype.warn).toHaveBeenCalledTimes(1)
 			expect(JSONLogger.prototype.warn).toHaveBeenCalledWith({
 				level: 'warning',

@@ -71,6 +71,11 @@ export class Logger {
 		)
 		this.config.DEBUGGING = /true/i.test(process.env.DEBUGGING || 'false')
 		this.config.TESTING = /true/i.test(process.env.TESTING || 'false')
+
+		Logger.jsonlogger =
+			Logger.config.LOG_OUTPUT === 'json'
+				? new JSONLogger({ loggerName: 'node' })
+				: null
 	}
 
 	static changeConfigs(configs: Partial<LoggerConfigs>) {
