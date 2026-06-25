@@ -2,9 +2,27 @@ import chalk from 'chalk'
 import JSONLogger from 'node-json-logger'
 
 export interface LoggerConfigs {
+	/**
+	 * Only logs with level <= of LOG_LEVEL will be printed.
+	 */
 	LOG_LEVEL: LoggerLevels | string
+	/**
+	 * Either default 'text' or 'json'
+	 */
 	LOG_OUTPUT: LoggerOutput
+	/**
+	 * When true, ignores LOG_LEVEL when printing debugging level logs.
+	 *
+	 * Useful to quickly enable debug logs when debugging (duh).
+	 */
 	DEBUGGING: boolean
+	/**
+	 * This suppresses all the logs.
+	 *
+	 * The reason why it's called TESTING and not SUPPRESS_ALL_LOGS is because TESTING is what's used by vitest and other unit testing tools.
+	 *
+	 * Unit tests are exactly the time where you don't want to clog your console with unrelated logs.
+	 */
 	TESTING: boolean
 }
 
@@ -12,8 +30,18 @@ interface LoggerConfigsInternal extends LoggerConfigs {
 	LOG_LEVEL: LoggerLevels
 }
 
+/**
+ * 'test' is default string logs to stdout/stderr.
+ *
+ * 'json' is used in deployed environments to format output in json so that Promtail/Loki/Grafana Stacks can easily deal with them.
+ */
 export type LoggerOutput = 'text' | 'json'
 
+/**
+ * 'unknown' is not inteded to be used on purpose.
+ *
+ * It is only assigned whenever something in configuration fails so that it still has a value Grafana can understand, rather than having Grafana try its best and match it at random.
+ */
 export enum LoggerLevels {
 	'unknown',
 	'trace',
@@ -64,7 +92,12 @@ export class Logger {
 			? new JSONLogger({ loggerName: 'node' })
 			: null
 
-	static reloadEnvConfigs() {
+	/**
+	 * Forces reloading all configs from 'process.env'.
+	 *
+	 * Useful when you populate environment at runtime after ez-ts-logger is already imported, for example when using 'dotenv'.
+	 */
+	static reloadEnvConfigs(): void {
 		this.config.LOG_LEVEL = determineLogLevel(process.env.LOG_LEVEL || 'info')
 		this.config.LOG_OUTPUT = determineLogOutput(
 			process.env.LOG_OUTPUT || 'text',
@@ -78,7 +111,11 @@ export class Logger {
 				: null
 	}
 
-	static changeConfigs(configs: Partial<LoggerConfigs>) {
+	/**
+	 * Updates the current config.
+	 * @param configs - An object with every config you want to change.
+	 */
+	static changeConfigs(configs: Partial<LoggerConfigs>): void {
 		for (let key of Object.keys(configs)) {
 			if (key == 'LOG_LEVEL') {
 				if (typeof configs[key] === 'string')
@@ -96,11 +133,19 @@ export class Logger {
 		}
 	}
 
+	/**
+	 * Returns all current configs.
+	 * @returns The current configuration object, such as active log levels and output format.
+	 */
 	static currentConfigs(): LoggerConfigs {
 		return this.config
 	}
 
-	static trace(args: string | Record<string, any>) {
+	/**
+	 * Prints a 'trace' level message.
+	 * @params args - Can be a string or a JSON style object
+	 */
+	static trace(args: string | Record<string, any>): void {
 		if (Logger.config.TESTING) return
 		if (Logger.config.LOG_LEVEL <= LoggerLevels.trace)
 			if (Logger.jsonlogger) {
@@ -115,7 +160,11 @@ export class Logger {
 			}
 	}
 
-	static debug(args: string | Record<string, any>) {
+	/**
+	 * Prints a 'debug' level message.
+	 * @params args - Can be a string or a JSON style object
+	 */
+	static debug(args: string | Record<string, any>): void {
 		if (Logger.config.TESTING) return
 		if (
 			Logger.config.LOG_LEVEL <= LoggerLevels.debug ||
@@ -133,11 +182,21 @@ export class Logger {
 			}
 	}
 
-	static log(args: string | Record<string, any>) {
+	/**
+	 * Prints an 'info' level message.
+	 *
+	 * Same as Logger.info().
+	 * @params args - Can be a string or a JSON style object.
+	 */
+	static log(args: string | Record<string, any>): void {
 		return Logger.info(args)
 	}
 
-	static info(args: string | Record<string, any>) {
+	/**
+	 * Prints an 'info' level message.
+	 * @params args - Can be a string or a JSON style object.
+	 */
+	static info(args: string | Record<string, any>): void {
 		if (Logger.config.TESTING) return
 		if (Logger.config.LOG_LEVEL <= LoggerLevels.info)
 			if (Logger.jsonlogger) {
@@ -152,7 +211,21 @@ export class Logger {
 			}
 	}
 
-	static warn(args: string | Error | Record<string, any>) {
+	/**
+	 * Prints a 'warning' level message.
+	 *
+	 * Same as Logger.warn().
+	 * @params args - Can be a string, a JSON style object, an instance of Error or any CustomError that extends Error.
+	 */
+	static warning(args: string | Error | Record<string, any>): void {
+		return Logger.warn(args)
+	}
+
+	/**
+	 * Prints a 'warning' level message.
+	 * @params args - Can be a string, a JSON style object, an instance of Error or any CustomError that extends Error.
+	 */
+	static warn(args: string | Error | Record<string, any>): void {
 		if (Logger.config.TESTING) return
 		if (Logger.config.LOG_LEVEL <= LoggerLevels.warning)
 			if (Logger.jsonlogger) {
@@ -176,7 +249,11 @@ export class Logger {
 			}
 	}
 
-	static error(args: string | Error | Record<string, any>) {
+	/**
+	 * Prints an 'error' level message.
+	 * @params args - Can be a string, a JSON style object, an instance of Error or any CustomError that extends Error.
+	 */
+	static error(args: string | Error | Record<string, any>): void {
 		if (Logger.config.TESTING) return
 		if (Logger.config.LOG_LEVEL <= LoggerLevels.error)
 			if (Logger.jsonlogger) {
@@ -199,12 +276,22 @@ export class Logger {
 				)
 	}
 
-	static errorAndThrow(error: Error) {
+	/**
+	 * Prints an 'error' level message.
+	 *
+	 * Then throws the provided error.
+	 * @params error - Can be an instance of Error or any CustomError that extends Error.
+	 */
+	static errorAndThrow(error: Error): void {
 		this.error(error)
 		throw error
 	}
 
-	static critical(args: string | Error | Record<string, any>) {
+	/**
+	 * Print a 'critical' level message.
+	 * @params args - Can be a string, a JSON style object, an instance of Error or any CustomError that extends Error.
+	 */
+	static critical(args: string | Error | Record<string, any>): void {
 		if (Logger.config.TESTING) return
 		if (Logger.config.LOG_LEVEL <= LoggerLevels.critical)
 			if (Logger.jsonlogger) {
@@ -227,7 +314,13 @@ export class Logger {
 				)
 	}
 
-	static criticalAndThrow(error: Error) {
+	/**
+	 * Prints a 'critical' level message.
+	 *
+	 * Then throws the provided error.
+	 * @params error - Can be an instance of Error or any CustomError that extends Error.
+	 */
+	static criticalAndThrow(error: Error): void {
 		this.critical(error)
 		throw error
 	}
