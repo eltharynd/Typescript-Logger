@@ -282,7 +282,7 @@ export class Logger {
 	 * Then throws the provided error.
 	 * @params error - Can be an instance of Error or any CustomError that extends Error.
 	 */
-	static errorAndThrow(error: Error): void {
+	static errorAndThrow(error: Error | unknown): void {
 		this.error(error)
 		throw error
 	}
@@ -320,7 +320,7 @@ export class Logger {
 	 * Then throws the provided error.
 	 * @params error - Can be an instance of Error or any CustomError that extends Error.
 	 */
-	static criticalAndThrow(error: Error): void {
+	static criticalAndThrow(error: Error | unknown): void {
 		this.critical(error)
 		throw error
 	}
